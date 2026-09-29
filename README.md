@@ -6,6 +6,8 @@ A Python tool and Google Colab notebook to convert custom JumpStart Themes gener
 
 BurgerTokens exports pack art and decklists side-by-side into a single file. This tool automatically crops and separates each image, standardizes the card sizing (2.5" × 3.5"), and organizes mirrored pairs for double-sided printing.
 
+<img width="960" height="540" alt="workflow-preview" src="https://github.com/user-attachments/assets/1d69a971-7e0f-4637-97b4-9590a866f953" />
+
 ---
 
 ## Features
