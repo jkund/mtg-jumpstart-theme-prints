@@ -31,12 +31,14 @@ BurgerTokens beautifully exports pack art and decklists side-by-side into a sing
 ### Method 2: Local Python
 
 1. Clone repository:
-   ```bash
-   git clone [https://github.com/jkund/mtg-jumpstart-theme-prints.git](https://github.com/jkund/mtg-jumpstart-theme-prints.git)
+ ```bash
+   git clone https://github.com/jkund/mtg-jumpstart-theme-prints.git
    cd mtg-jumpstart-theme-prints
+   ```
 2. Install dependencies:
    ```bash
    pip install pillow reportlab
+   ```
 
 3. Place BurgerTokens generated image files into the _raw_inputs/_ folder.
 
@@ -45,6 +47,7 @@ BurgerTokens beautifully exports pack art and decklists side-by-side into a sing
 5. Run the script:
    ```bash
     python generate_sheets.py
+   ```
 
 Compiled PDF will be saved to your working directory.
 
