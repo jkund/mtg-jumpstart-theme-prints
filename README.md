@@ -88,7 +88,7 @@ Pillow
 ReportLab
 
 ## License
-This project is licensed under the MIT License. See LICENSE for details.
+This project is licensed under the MIT License. See [LICENSE](https://github.com/jkund/mtg-jumpstart-theme-prints/blob/dadb413c5f1ad7958ce226acf447c54c133054fd/LICENSE)  for details.
 
 Card imagery and theme layouts generated via BurgerTokens. 
 
