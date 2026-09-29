@@ -2,9 +2,9 @@
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jkund/mtg-jumpstart-theme-prints/blob/main/MtG_JumpStart_Themes_Print_Generator.ipynb)
 
-A Python tool and Google Colab notebook to convert side-by-side exports from [BurgerTokens](https://burgertokens.com/pages/jumpstart-theme-card-builder) into print-ready, double-sided PDFs.
+A Python tool and Google Colab notebook to convert custom JumpStart Themes generated at [BurgerTokens](https://burgertokens.com/pages/jumpstart-theme-card-builder) into print-ready PDFs.
 
-BurgerTokens beautifully exports pack art and decklists side-by-side into a single file. This tool automatically crops and separates each image, standardizes the card sizing (2.5" × 3.5"), and organizes mirrored pairs for double-sided printing.
+BurgerTokens exports pack art and decklists side-by-side into a single file. This tool automatically crops and separates each image, standardizes the card sizing (2.5" × 3.5"), and organizes mirrored pairs for double-sided printing.
 
 ---
 
