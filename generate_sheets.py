@@ -1,15 +1,20 @@
 """
-MTG Jumpstart Themes Print Generator
+MTG Jumpstart / Jump In 3x3 Duplex Sheet Generator
 ==================================================
-Converts side-by-side exports from BurgerTokens into print-ready,
+Converts raw side-by-side exports from BurgerTokens into print-ready,
 double-sided 3x3 US Letter PDFs with long-edge duplex alignment.
+
+Features:
+  - Automatic deck detection & alphabetical ordering based on filenames
+  - Automatic 3x3 grid grouping and empty slot padding
+  - Automatic column-mirroring for long-edge duplex printing
 
 Usage:
   1. pip install reportlab pillow
   2. Place your raw images in 'raw_inputs/'
   3. Run: python generate_sheets.py
 
-Repository & Documentation:
+Repository:
 https://github.com/jkund/mtg-jumpstart-theme-prints
 """
 
@@ -39,7 +44,7 @@ def get_raw_files():
     found = []
     for ext in valid_exts:
         found.extend(glob.glob(os.path.join(RAW_INPUT_DIR, ext)))
-    return found
+    return sorted(found)
 
 
 raw_files = get_raw_files()
@@ -60,7 +65,6 @@ TARGET_H = 1050  # 3.5" at 300 DPI
 
 def get_card_bounding_boxes(img):
     """Locates the front card using the outer black frame on the left,
-
     and applies identical dimensions to the right card.
     """
     total_w, total_h = img.size
@@ -144,7 +148,7 @@ if processed_count == 0:
     raise SystemExit("No images processed. Stopping before PDF build.")
 
 # ==============================================================================
-# 4. DUPLEX 3x3 GRID BUILDER (PDF CANVAS)
+# 4. DUPLEX 3x3 GRID BUILDER (AUTO-DETECT DECKS & SHEETS)
 # ==============================================================================
 print("\n--- Step 2: Assembling Printable Duplex PDF ---")
 DPI_PDF = 72.0
@@ -155,6 +159,7 @@ CARD_HEIGHT_PT = 3.5 * DPI_PDF   # 252.0 points
 
 GRID_COLS = 3
 GRID_ROWS = 3
+CARDS_PER_SHEET = GRID_COLS * GRID_ROWS  # 9
 
 GRID_TOTAL_WIDTH = GRID_COLS * CARD_WIDTH_PT    # 7.5 inches
 GRID_TOTAL_HEIGHT = GRID_ROWS * CARD_HEIGHT_PT  # 10.5 inches
@@ -165,26 +170,27 @@ MARGIN_BOTTOM = (PAGE_HEIGHT - GRID_TOTAL_HEIGHT) / 2.0
 
 OUTPUT_PDF = "MtG_JumpStart_Themes_Print.pdf"
 
-# Rename deck examples to match each image filename
-sheet1_packs = [
-    "DECK_NAME_1", "DECK_NAME_2", "DECK_NAME_3",
-    "DECK_NAME_4", "DECK_NAME_5", "DECK_NAME_6",
-    "DECK_NAME_7", "DECK_NAME_8", "DECK_NAME_9"
-]
+# ------------------------------------------------------------------------------
+# AUTOMATIC PACK DETECTION & CHUNKING
+# ------------------------------------------------------------------------------
+front_images = sorted(glob.glob(os.path.join(CROPPED_FRONT_DIR, "*.png")))
+detected_packs = [os.path.splitext(os.path.basename(f))[0] for f in front_images]
 
-sheet2_packs = [
-    "DECK_NAME_10", "DECK_NAME_11", "DECK_NAME_12",
-    "DECK_NAME_13", "DECK_NAME_14", "DECK_NAME_15",
-    "DECK_NAME_16", "DECK_NAME_17", "DECK_NAME_18"
-]
+total_decks = len(detected_packs)
+if total_decks == 0:
+    raise SystemExit("No processed cards found to build PDF.")
 
-sheet3_packs = [
-    "DECK_NAME_19", "DECK_NAME_20", "DECK_NAME_21",
-    "DECK_NAME_22", "DECK_NAME_23", "DECK_NAME_24",
-    None, None, None
-]
+print(f"Auto-detected {total_decks} deck(s): {', '.join(detected_packs)}")
 
-all_sheets = [sheet1_packs, sheet2_packs, sheet3_packs]
+# Chunk detected packs into 9-card groups, padding the last sheet with None
+all_sheets = []
+for i in range(0, total_decks, CARDS_PER_SHEET):
+    chunk = detected_packs[i:i + CARDS_PER_SHEET]
+    while len(chunk) < CARDS_PER_SHEET:
+        chunk.append(None)
+    all_sheets.append(chunk)
+
+print(f"Generating {len(all_sheets)} sheet pairs ({len(all_sheets) * 2} pages total)...")
 
 
 def find_image(folder, pack_id):
@@ -262,5 +268,5 @@ if __name__ == "__main__":
         draw_sheet(pdf, sheet, is_back=True)
 
     pdf.save()
-    print(f"\nGenerated: '{OUTPUT_PDF}' (6 pages total).")
+    print(f"\n✓ Generated: '{OUTPUT_PDF}' ({len(all_sheets) * 2} pages total).")
     print("Reminder: Print at 100% / Actual Size with 'Flip on Long Edge'.")
